@@ -78,16 +78,7 @@ app.layout = html.Div(children=[
                     marks={year: {'label': str(year)} for year in range(2015, 2023)}
                 ),
                 html.Div(id='slider-output-container')
-            ], width=6),
-      
-            dbc.Col(children=[
-                dcc.Dropdown(
-                    options=amenity_options,
-                    value=amenity_options[0]['value'],
-                    id="choropleth-select"
-                ),
-                html.Div(id='dropdown-output-container')
-            ], width=6)        
+            ], width=12),     
         ]),                
         dbc.Row(children=[
             dbc.Col(html.Div(""), width=12)  # Empty column to add space
