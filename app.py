@@ -5,6 +5,7 @@ import geopandas as gpd
 import pandas as pd
 from pathlib import Path
 
+
 dataset_folder = Path('datasets/')
 waste_dataset_folder = Path('datasets/waste_Data')
 
@@ -57,14 +58,6 @@ navbar = dbc.NavbarSimple(
     color="green",
     dark=True,
 )
-
-# Calculate key metrics based on the selected year
-def calculate_metrics(selected_year):
-    data = globals()[f"data_{selected_year}"]
-    waste_generated = data['waste_generated'].sum()
-    waste_facilities = len(data)
-    average_population_density = data['population_density'].mean()
-    return waste_generated, waste_facilities, average_population_density
 
 app.layout = html.Div(children=[
     navbar, # and add them to the layout
@@ -164,6 +157,17 @@ def set_dropdown_select(selected_type):
     value = options[0]['value']
 
     return options, value
+
+@callback(
+    Output('waste-generated', 'children'),
+    Output('waste-disposal-facilities', 'children'),
+    Output('average-population-density', 'children'),
+    Input('my-slider', 'value')
+)
+def update_metrics(selected_year):
+    total_waste = globals()[f"total_waste_{selected_year}"]
+    # You can similarly calculate other metrics like waste disposal facilities and average population density
+    return f"{total_waste} tons", "Some value", "Another value"
 
 @callback(
     Output('map-graph', 'figure'),
