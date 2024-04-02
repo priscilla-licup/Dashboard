@@ -108,27 +108,6 @@ app.layout = html.Div(children=[
                     ])
                 ], color="primary", inverse=True)
             ], width=4)
-        ]),
-        dbc.Row(children=[
-            html.H2("Which province has more schools?"),
-        ]),
-        dbc.Row(children=[
-           dbc.Col(children=[
-               html.P("Choose a column to display"),
-               dbc.RadioItems(['amenity', 'operator'], 'amenity', id='map-type', inline=True)
-           ], width=6),
-           dbc.Col(children=[
-               html.P("Choose the value to be displayed on the choropleth:"),
-               dcc.Dropdown(options=amenity_options, value=amenity_options[0]['value'], id="choropleth-select")
-           ], width=6)
-        ]),
-        dbc.Row(children=[
-            dbc.Col(children=[
-                dcc.Loading(id="map-loading", children=dcc.Graph(id="map-graph"))
-            ], width=6),
-            dbc.Col(children=[
-                dcc.Loading(id="bar-loading", children=dcc.Graph(id="bar-list"))
-            ], width=6)
         ])
     ])
 ])
@@ -160,33 +139,8 @@ def update_metrics(selected_year):
     # You can similarly calculate other metrics like waste disposal facilities and average population density
     return f"{total_waste} tons", "Some value", "Another value"
 
-@callback(
-    Output('map-graph', 'figure'),
-    Output('bar-list', 'figure'),
-    Input('choropleth-select', 'value'),
-    Input('map-type', 'value')
-)
-def display_map(selected_value, selected_type):
-    if 'amenity' == selected_type:
-        geodf = amenity_gdf_indexed
 
-    elif 'operator' == selected_type:
-        geodf = operatorty_gdf_indexed
 
-    map_fig = px.choropleth_mapbox(geodf,
-                           geojson=geodf.geometry,
-                           locations=geodf.index,
-                           color=selected_value,
-                           center={'lat': 12.099568, 'lon': 122.733168},
-                           zoom=4, height=800)
-    map_fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-
-    sorted_df = geodf.sort_values(by=selected_value)
-    bar_fig = px.bar(sorted_df, x=selected_value, y=sorted_df.index, 
-                 color_continuous_scale='teal', color=selected_value, template='plotly_white', 
-                 height=800, title='Provincial Schools Bar Chart')
-    
-    return map_fig, bar_fig
 
 
 if __name__ == '__main__':
