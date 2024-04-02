@@ -6,8 +6,17 @@ import pandas as pd
 from pathlib import Path
 
 dataset_folder = Path('datasets/')
+waste_dataset_folder = Path('datasets/waste_Data')
 
 # Import your data
+data_2015 = gpd.read_file(waste_dataset_folder / '2015.csv')
+data_2016 = gpd.read_file(waste_dataset_folder / '2016.csv')
+data_2017 = gpd.read_file(waste_dataset_folder / '2017.csv')
+data_2018 = gpd.read_file(waste_dataset_folder / '2018.csv')
+data_2019 = gpd.read_file(waste_dataset_folder / '2019.csv')
+data_2020 = gpd.read_file(waste_dataset_folder / '2020.csv')
+data_2021 = gpd.read_file(waste_dataset_folder / '2021.csv')
+data_2022 = gpd.read_file(waste_dataset_folder / '2022.csv')
 educ_sites = gpd.read_file(dataset_folder / 'hotosm_phl_education_facilities.shp')
 amenity_gdf = gpd.read_file(dataset_folder / 'ph_educ_by_amenity.geojson', driver='GeoJSON')
 operatorty_gdf = gpd.read_file(dataset_folder / 'ph_educ_by_operatorty.geojson', driver='GeoJSON')
@@ -15,6 +24,8 @@ operatorty_gdf = gpd.read_file(dataset_folder / 'ph_educ_by_operatorty.geojson',
 # Best to set the name of the location as the index for choropleths
 amenity_gdf_indexed = amenity_gdf.set_index('province')
 operatorty_gdf_indexed = operatorty_gdf.set_index('province')
+
+slider_marks = {year: {'label': str(year)} for year in range(2015, 2023)}
 
 # Options
 amenity_options = []
@@ -41,19 +52,78 @@ navbar = dbc.NavbarSimple(
     children=[
         dbc.NavItem(dbc.NavLink("Home", href="#")),
     ],
-    brand="PH Educational Institutions",
+    brand="DASHBOARD",
     brand_href="#",
-    color="primary",
+    color="green",
     dark=True,
 )
+
+# Calculate key metrics based on the selected year
+def calculate_metrics(selected_year):
+    data = globals()[f"data_{selected_year}"]
+    waste_generated = data['waste_generated'].sum()
+    waste_facilities = len(data)
+    average_population_density = data['population_density'].mean()
+    return waste_generated, waste_facilities, average_population_density
 
 app.layout = html.Div(children=[
     navbar, # and add them to the layout
     dbc.Container(children=[
         dbc.Row(children=[
-            html.H1("Philippine Educational Institutions"),
+            html.H1("Philippine Waste Management"),
             html.P("Education is important and it helps ...."),
             html.P("Second paragraph here.")
+        ]),
+        dbc.Row(children=[
+            dbc.Col(children=[
+                dcc.Slider(
+                    min=2015,
+                    max=2022,
+                    step=1,
+                    value=2015,
+                    id='my-slider',
+                    marks={year: {'label': str(year)} for year in range(2015, 2023)}
+                ),
+                html.Div(id='slider-output-container')
+            ], width=6),
+      
+            dbc.Col(children=[
+                dcc.Dropdown(
+                    options=amenity_options,
+                    value=amenity_options[0]['value'],
+                    id="choropleth-select"
+                ),
+                html.Div(id='dropdown-output-container')
+            ], width=6)        
+        ]),                
+        dbc.Row(children=[
+            dbc.Col(html.Div(""), width=12)  # Empty column to add space
+        ]),
+        dbc.Row(children=[
+            dbc.Col(children=[
+                dbc.Card([
+                    dbc.CardBody([
+                        html.H4("Waste Generated", className="card-title"),
+                        html.P(id="waste-generated", className="card-text")
+                    ])
+                ], color="danger", inverse=True)
+            ], width=4),
+            dbc.Col(children=[
+                dbc.Card([
+                    dbc.CardBody([
+                        html.H4("Waste Disposal Facilities", className="card-title"),
+                        html.P(id="waste-facilities", className="card-text")
+                    ])
+                ], color="success", inverse=True)
+            ], width=4),
+            dbc.Col(children=[
+                dbc.Card([
+                    dbc.CardBody([
+                        html.H4("Average Population Density", className="card-title"),
+                        html.P(id="average-population-density", className="card-text")
+                    ])
+                ], color="primary", inverse=True)
+            ], width=4)
         ]),
         dbc.Row(children=[
             html.H2("Which province has more schools?"),
