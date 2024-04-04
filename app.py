@@ -89,9 +89,18 @@ navbar = dbc.NavbarSimple(
     ],
     brand="DASHBOARD",
     brand_href="#",
-    color="green",
+    color="black",
     dark=True,
 )
+
+waste_columns = [
+    'Wastes with Cyanide', 'Acid Wastes', 'Alkali Wastes', 'Wastes with Inorganic Chemicals', 'Reactive Chemical Wastes',
+    'Inks/Dyes/Pigments/Paint/Latex/Adhesives/Organic Sludge', 'Waste Organic Solvents', 'Organic Wastes', 'Oil', 'Containers', 'Stabilized Wastes', 'Organic Chemicals', 'Miscellaneous Wastes', 'Total Hazardous Wastes', 'Total Treated Hazardous Wastes'
+]
+
+faci_columns = [
+    'Materials Recovery Facility', 'Sanitary Landfill', 'Registered TSD Facilities'
+]
 
 # Choropleth - Dropdown
 dropdown_options = [
@@ -105,14 +114,12 @@ dropdown_options = [
 region_options = [{'label': region, 'value': region} for region in new_data_2015['Region'].unique()]
 
 # --------------------------------------
-
 app.layout = html.Div(children=[
     navbar, # and add them to the layout
+
     dbc.Container(children=[
         dbc.Row(children=[
             html.H1("Philippine Waste Management"),
-            html.P("Education is important and it helps ...."),
-            html.P("Second paragraph here."),
         ],
             style={'margin': '30px'}),
         dbc.Row([
@@ -140,24 +147,24 @@ app.layout = html.Div(children=[
             dbc.Col(children=[
                 dbc.Card([
                     dbc.CardBody([
-                        html.H4("Waste Generated", className="card-title"),
-                        html.P(id="waste-generated", className="card-text")
+                        html.H1(id="waste-generated", className="card-text", style={'text-align': 'center', 'font-weight': 'bold'}),
+                        html.P("Waste Generated (KG)", className="card-title", style={'text-align': 'center'})
                     ])
                 ], color="danger", inverse=True)
             ], width=4),
             dbc.Col(children=[
                 dbc.Card([
                     dbc.CardBody([
-                        html.H4("Waste Disposal Facilities", className="card-title"),
-                        html.P(id="waste-facilities", className="card-text")
+                        html.H1(id="waste-facilities", className="card-text", style={'text-align': 'center', 'font-weight': 'bold'}),
+                        html.P("Waste Disposal Facilities", className="card-title", style={'text-align': 'center'})
                     ])
                 ], color="success", inverse=True)
             ], width=4),
             dbc.Col(children=[
                 dbc.Card([
                     dbc.CardBody([
-                        html.H4("Average Population Density", className="card-title"),
-                        html.P(id="average-population-density", className="card-text")
+                        html.H1(id="average-population-density", className="card-text", style={'text-align': 'center', 'font-weight': 'bold'}),
+                        html.P("Average Population Density", className="card-title", style={'text-align': 'center'})
                     ])
                 ], color="primary", inverse=True)
             ], width=4)
@@ -182,34 +189,28 @@ app.layout = html.Div(children=[
     ])
 ])
 
-@callback(
-    Output('choropleth-select', 'options'),
-    Output('choropleth-select', 'value'),
-    Input('map-type', 'value')
-)
-def set_dropdown_select(selected_type):
-    options = None
-    if selected_type == 'amenity':
-        options = amenity_options
-    else:
-        options = operator_options
-
-    value = options[0]['value']
-
-    return options, value
-
+# -------------------------------------
+# Waste Generated - Callback/Function
 @callback(
     Output('waste-generated', 'children'),
-<<<<<<< HEAD
-    [Input('my-slider', 'value')]
+    [Input('my-slider', 'value'), 
+     Input('region-select-dropdown', 'value')]
 )
-
-def update_waste_generated(selected_year):
+def update_waste_generated(selected_year, selected_region):
     dataset = pd.read_csv(new_waste_dataset_folder / f'{selected_year}.csv')
     waste_filtered = [col for col in waste_columns if col in dataset.columns]
-    dataset[waste_filtered] = dataset[waste_filtered].apply(pd.to_numeric, errors='coerce')    
-    waste_generated = dataset.iloc[2:, :][waste_filtered].sum().sum()
-    formatted_waste_generated = "{:,}".format(int(waste_generated))
+    dataset[waste_filtered] = dataset[waste_filtered].apply(pd.to_numeric, errors='coerce')
+
+    if selected_region:
+        region_data = dataset.loc[dataset['Region'] == selected_region]
+        waste_generated = region_data[waste_filtered].sum().sum()
+    else:
+        waste_generated = dataset.iloc[2:, :][waste_filtered].sum().sum()
+    
+    if waste_generated == 0:
+        formatted_waste_generated = "No Data"
+    else:
+        formatted_waste_generated = "{:,}".format(int(waste_generated))
     
     return formatted_waste_generated
 
@@ -217,41 +218,50 @@ def update_waste_generated(selected_year):
 # Waste Facilities - Callback/Function
 @callback(
     Output('waste-facilities', 'children'),
-    [Input('my-slider', 'value')]
+    [Input('my-slider', 'value'), 
+     Input('region-select-dropdown', 'value')]
 )
-def update_waste_facilities(selected_year):
+def update_waste_facilities(selected_year, selected_region):
+
     dataset = pd.read_csv(new_waste_dataset_folder / f'{selected_year}.csv')    
     faci_filtered = [col for col in faci_columns if col in dataset.columns]
     dataset[faci_filtered] = dataset[faci_filtered].apply(pd.to_numeric, errors='coerce')
-    waste_facilities = dataset.iloc[2:, :][faci_filtered].sum().sum()
-    formatted_waste_facilities = "{:,}".format(int(waste_facilities))
+
+    if selected_region:
+        region_data = dataset.loc[dataset['Region'] == selected_region]
+        waste_facilities = region_data[faci_filtered].sum().sum()
+    else:
+        waste_facilities = dataset.iloc[2:, :][faci_filtered].sum().sum()
+
+    if waste_facilities == 0:
+        formatted_waste_facilities = "No Data"
+    else:
+        formatted_waste_facilities = "{:,}".format(int(waste_facilities))
     
     return formatted_waste_facilities
 
 # -------------------------------------
 # average population density - Callback/Function
 @callback(
-=======
-    Output('waste-disposal-facilities', 'children'),
->>>>>>> parent of f7ef9f7 (fixed key metric cards format)
     Output('average-population-density', 'children'),
-    Input('my-slider', 'value')
+    [Input('my-slider', 'value'), 
+     Input('region-select-dropdown', 'value')]
 )
-<<<<<<< HEAD
-def update_average_population_density(selected_year):
+def update_average_population_density(selected_year, selected_region):
     dataset = pd.read_csv(new_waste_dataset_folder / f'{selected_year}.csv')
-    population_column_index = 22 
-    total_population = dataset.iloc[2:, population_column_index].sum()  
-    average_population_density = total_population / 17
-    formatted_average_population_density = "{:,}".format(int(average_population_density))
+    population_column_index = 22 # 23 regions
+
+    if selected_region:
+        region_data = dataset.loc[dataset['Region'] == selected_region]
+        total_population = region_data.iloc[:, population_column_index].sum()  
+        population_equivalent = total_population
+    else:
+        total_population = dataset.iloc[2:, population_column_index].sum()  
+        population_equivalent = total_population / 17
+
+    formatted_population_equivalent = "{:,}".format(int(population_equivalent))
     
-    return formatted_average_population_density
-=======
-def update_metrics(selected_year):
-    total_waste = globals()[f"total_waste_{selected_year}"]
-    # You can similarly calculate other metrics like waste disposal facilities and average population density
-    return f"{total_waste} tons", "Some value", "Another value"
->>>>>>> parent of f7ef9f7 (fixed key metric cards format)
+    return formatted_population_equivalent
 
 # -------------------------------------
 # Choropleth - Callback/Function
@@ -339,6 +349,24 @@ def update_charts(selected_region):
                        labels={"value": "Volume", "variable": "Waste Type"})
 
     return fig_bar, fig_area
+
+# -------------------------------------
+# Pie Chart - Callback/Function
+
+@callback(
+    Output('pie-chart', 'figure'),
+    [Input('region-select-dropdown', 'value'),
+     Input('my-slider', 'value')])
+
+def update_pie_chart(target_region = 'Philippines', target_year = 2015):
+    df = datasets_by_year[target_year]
+    filtered_df = df.loc[df['Region'] == target_region]
+    waste_types_df = filtered_df[['Wastes with Cyanide', 'Acid Wastes', 'Alkali Wastes', 'Wastes with Inorganic Chemicals', 'Reactive Chemical Wastes', 'Inks/Dyes/Pigments/Paint/Latex/Adhesives/Organic Sludge', 'Waste Organic Solvents', 'Organic Wastes', 'Oil', 'Containers', 'Stabilized Wastes', 'Organic Chemicals', 'Miscellaneous Wastes']]
+    waste_types_counts = waste_types_df.sum()
+
+    waste_types_counts_df = pd.DataFrame({'Waste Type': waste_types_counts.index, 'Count': waste_types_counts.values})
+
+    return px.pie(waste_types_counts_df, values='Count', names='Waste Type', title=f'Distribution of Treated Hazardous Waste Types in {target_region}, {target_year}')
 
 if __name__ == '__main__':
     app.run(debug=True)
