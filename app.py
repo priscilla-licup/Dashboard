@@ -200,14 +200,58 @@ def set_dropdown_select(selected_type):
 
 @callback(
     Output('waste-generated', 'children'),
+<<<<<<< HEAD
+    [Input('my-slider', 'value')]
+)
+
+def update_waste_generated(selected_year):
+    dataset = pd.read_csv(new_waste_dataset_folder / f'{selected_year}.csv')
+    waste_filtered = [col for col in waste_columns if col in dataset.columns]
+    dataset[waste_filtered] = dataset[waste_filtered].apply(pd.to_numeric, errors='coerce')    
+    waste_generated = dataset.iloc[2:, :][waste_filtered].sum().sum()
+    formatted_waste_generated = "{:,}".format(int(waste_generated))
+    
+    return formatted_waste_generated
+
+# -------------------------------------
+# Waste Facilities - Callback/Function
+@callback(
+    Output('waste-facilities', 'children'),
+    [Input('my-slider', 'value')]
+)
+def update_waste_facilities(selected_year):
+    dataset = pd.read_csv(new_waste_dataset_folder / f'{selected_year}.csv')    
+    faci_filtered = [col for col in faci_columns if col in dataset.columns]
+    dataset[faci_filtered] = dataset[faci_filtered].apply(pd.to_numeric, errors='coerce')
+    waste_facilities = dataset.iloc[2:, :][faci_filtered].sum().sum()
+    formatted_waste_facilities = "{:,}".format(int(waste_facilities))
+    
+    return formatted_waste_facilities
+
+# -------------------------------------
+# average population density - Callback/Function
+@callback(
+=======
     Output('waste-disposal-facilities', 'children'),
+>>>>>>> parent of f7ef9f7 (fixed key metric cards format)
     Output('average-population-density', 'children'),
     Input('my-slider', 'value')
 )
+<<<<<<< HEAD
+def update_average_population_density(selected_year):
+    dataset = pd.read_csv(new_waste_dataset_folder / f'{selected_year}.csv')
+    population_column_index = 22 
+    total_population = dataset.iloc[2:, population_column_index].sum()  
+    average_population_density = total_population / 17
+    formatted_average_population_density = "{:,}".format(int(average_population_density))
+    
+    return formatted_average_population_density
+=======
 def update_metrics(selected_year):
     total_waste = globals()[f"total_waste_{selected_year}"]
     # You can similarly calculate other metrics like waste disposal facilities and average population density
     return f"{total_waste} tons", "Some value", "Another value"
+>>>>>>> parent of f7ef9f7 (fixed key metric cards format)
 
 # -------------------------------------
 # Choropleth - Callback/Function
