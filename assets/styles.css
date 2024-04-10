@@ -1,0 +1,41 @@
+.left {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /*This will space out the images evenly*/
+    position: absolute;  /*# Change to 'fixed' to make it stay in place while scrolling*/
+    height: 100%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 15%; /*# Width of the sidebar*/
+    z-index: 1;  /*# Adjust z-index as needed*/
+}
+
+.right {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /*This will space out the images evenly*/
+    position: absolute;  /*# Change to 'fixed' to make it stay in place while scrolling*/
+    height: 100%;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 15%; /*# Width of the sidebar*/
+    z-index: 1;  /*# Adjust z-index as needed*/
+}
+
+.left img {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.right img {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
