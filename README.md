@@ -11,7 +11,7 @@
 Improper waste management is a prevalent issue in the Philippines, despite having collection systems. "What a Waste!" is a data dashboard designed to present the urgency of waste management issues to policymakers and large-scale waste generators. By understanding the data, we aim to enable informed decision-making for creating better waste reduction plans and promoting sustainable practices.
 
 **Project Team:** Team 5
-- ABROGUEANA, Alfhea Yvanika
+- ABROGUEAÑA, Alfhea Yvanika
 - DE SILVA, Wayne Flossien
 - JAVIER, Allysa
 - LICUP, Priscilla Mariah
