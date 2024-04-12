@@ -10,6 +10,7 @@ dataset_folder = Path('datasets/')
 waste_dataset_folder = Path('datasets/waste_data')
 new_waste_dataset_folder = Path('datasets/waste_data/new')
 geojson_dataset_folder = Path('datasets/geojson')
+assets_picture_folder = "/assets/garbage.png"
 
 # Import your data
 data_2015 = gpd.read_file(waste_dataset_folder / '2015.csv')
@@ -63,7 +64,7 @@ navbar = dbc.NavbarSimple(
     # children=[
     #     dbc.NavItem(dbc.NavLink("Home", href="#")),
     # ],
-    brand="DATA101 DASHBOARD",
+    brand="DATA101 DASHBOARD | PHILIPPINES' WASTE MANAGEMENT",
     brand_href="#",
     color="black",
     dark=True,
@@ -85,34 +86,34 @@ region_options = [{'label': region, 'value': region} for region in new_data_2015
 app.layout = html.Div(children=[
     navbar, # Left Image
     html.Div(children=[
-        # Left Sidebar
+        # # Left Sidebar
         # html.Div(children=[
-        #     html.Div(html.Img(src='/assets/garbage.png')),
-        #     html.Div(html.Img(src='/assets/garbage.png')),
-        #     html.Div(html.Img(src='/assets/garbage.png')),
-        #     html.Div(html.Img(src='/assets/garbage.png')),
-        #     html.Div(html.Img(src='/assets/garbage.png')),
-        #     html.Div(html.Img(src='/assets/garbage.png')),
-        #     html.Div(html.Img(src='/assets/garbage.png')),
-        #     html.Div(html.Img(src='/assets/garbage.png')),
+        #     html.Div(html.Img(src=assets_picture_folder)),
+        #     html.Div(html.Img(src=assets_picture_folder)),
+        #     html.Div(html.Img(src=assets_picture_folder)),
+        #     html.Div(html.Img(src=assets_picture_folder)),
+        #     html.Div(html.Img(src=assets_picture_folder)),
+        #     html.Div(html.Img(src=assets_picture_folder)),
+        #     html.Div(html.Img(src=assets_picture_folder)),
+        #     html.Div(html.Img(src=assets_picture_folder)),
         # ], className="left"),
 
         # # Right Sidebar
         # html.Div(children=[
-        #     html.Div(html.Img(src='/assets/garbage.png')),
-        #     html.Div(html.Img(src='/assets/garbage.png')),
-        #     html.Div(html.Img(src='/assets/garbage.png')),
-        #     html.Div(html.Img(src='/assets/garbage.png')),
-        #     html.Div(html.Img(src='/assets/garbage.png')),
-        #     html.Div(html.Img(src='/assets/garbage.png')),
-        #     html.Div(html.Img(src='/assets/garbage.png')),
-        #     html.Div(html.Img(src='/assets/garbage.png')),
+        #     html.Div(html.Img(src=assets_picture_folder)),
+        #     html.Div(html.Img(src=assets_picture_folder)),
+        #     html.Div(html.Img(src=assets_picture_folder)),
+        #     html.Div(html.Img(src=assets_picture_folder)),
+        #     html.Div(html.Img(src=assets_picture_folder)),
+        #     html.Div(html.Img(src=assets_picture_folder)),
+        #     html.Div(html.Img(src=assets_picture_folder)),
+        #     html.Div(html.Img(src=assets_picture_folder)),
         # ], className="right"),
 
         # Visualizations
         dbc.Container(children=[
             dbc.Row(children=[
-                html.H1("PHILIPPINES' WASTE MANAGEMENT", className="text-center",
+                html.H1("WHAT A WASTE!", className="text-center",
                         style={
                         'textAlign': 'center',
                         'color': 'black',
@@ -232,6 +233,7 @@ app.layout = html.Div(children=[
             'position': 'relative',
             'padding': '0',
             'margin': '0',
+            'zIndex': '0'
     }),
     
 ])
@@ -490,7 +492,11 @@ def update_pie_chart(selected_year, selected_region):
         color_discrete_map=category_colors
     )
 
-    fig.update_layout(legend_title_text='Waste Types')
+    fig.update_layout(legend_title_text='Waste Types', legend=dict(
+            itemdoubleclick=False,
+            itemclick=False
+        ))
+
 
     pieTitle = f'Types of Waste for {selected_region} in {selected_year}'
 
