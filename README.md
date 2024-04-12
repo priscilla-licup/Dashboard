@@ -4,7 +4,7 @@
 
 **Application Name:** What a Waste!
 
-**Link to Deployed Application:** (https://group5dashboard.pythonanywhere.com/)
+**Link to Deployed Application:** [Visit Dashboard](https://group5dashboard.pythonanywhere.com/)
 
 **Description:**
 
@@ -28,7 +28,7 @@ Before you begin, ensure you have the following installed:
 ### Downloading the Project
 
 1. **Download the ZIP from GitHub**
-   - Go to the [GitHub repository page](https://github.com/your-repository-link).
+   - Go to the [GitHub repository page](https://github.com/priscilla-licup/Dashboard).
    - Click on the `Code` button and select `Download ZIP`.
    - Extract the ZIP file to your desired location.
 
@@ -58,11 +58,12 @@ Before you begin, ensure you have the following installed:
     │ │ ├── 2016.csv
     │ │ ...
     │ └── geojson/
-    │ ├── 2015_gdf.geojson
-    │ ├── 2016_gdf.geojson
+    │ │ ├── 2015_gdf.geojson
+    │ │ ├── 2016_gdf.geojson
     │ ...
     ├── assets/
-    │ └── garbage.png
+    │ ├── garbage.png
+    │ ├── styles.css
     └── app.py
     ```
 
